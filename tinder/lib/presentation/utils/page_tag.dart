@@ -1,0 +1,4 @@
+enum PageTag {
+  login,
+  home,
+}

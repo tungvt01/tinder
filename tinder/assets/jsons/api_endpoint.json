@@ -1,0 +1,6 @@
+{
+  "sign_in": {
+    "endpoint": "/auth/login",
+    "method": "post"
+  }
+}
