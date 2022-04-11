@@ -1,6 +1,10 @@
 {
-  "sign_in": {
-    "endpoint": "/auth/login",
-    "method": "post"
+  "user_list": {
+    "endpoint": "/user",
+    "method": "get"
+  },
+  "user_detail": {
+    "endpoint": "/user",
+    "method": "get"
   }
 }

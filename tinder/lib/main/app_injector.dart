@@ -30,33 +30,28 @@ initInjector() {
   injector.registerLazySingleton<ApiConfig>(() => ApiConfigImpl(
         enviromentProvider: injector(),
       ));
+  injector.registerFactory<UserApi>(() => UserApiImpl());
+
   injector.registerLazySingleton<NetworkStatus>(
       () => NetworkStatusImpl(injector(), injector()));
 
-  injector.registerFactory<BookingRequestHeaderBuilder>(() =>
-      BookingRequestHeaderBuilder(
-          tokenCache: injector(), apiConfig: injector()));
-  injector.registerFactory<AuthenApi>(() => AuthenApiImpl());
+  injector.registerFactory<RequestHeaderBuilder>(
+      () => RequestHeaderBuilder(apiConfig: injector()));
 
-//Cache
+  //Cache
   injector
       .registerFactory<LocalDataStorage>(() => SharePreferenceStorageImpl());
-  injector
-      .registerLazySingleton<AuthenCache>(() => AuthenCacheImpl(injector()));
 
-// Repository
-  injector.registerFactory<AuthenticationRepository>(
-      () => AuthenticationRepositoryImpl(
-            injector(),
-            injector(),
-          ));
-//Bloc
-  injector.registerFactory<LoginBloc>(() => LoginBloc(injector(), injector()));
+  // Repository
+  injector.registerFactory<UserRepository>(() => UserRepositoryImpl(
+        injector(),
+      ));
+  //Bloc
+  injector.registerFactory<LoginBloc>(() => LoginBloc());
   // router
   injector.registerFactory<LoginRouter>(() => LoginRouter());
 
   // use case
-  injector.registerFactory<AuthenticationUseCases>(
-      () => AuthenticationUseCaseImpl(injector()));
-  injector.registerFactory<LogoutUseCase>(() => LogoutUseCaseImpl(injector()));
+  injector.registerFactory<FetchUsersUsecase>(
+      () => FetchUsersUsecaseImpl(injector()));
 }

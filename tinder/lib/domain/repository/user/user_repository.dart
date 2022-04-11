@@ -1,6 +1,5 @@
 import 'package:tinder/domain/model/index.dart';
 
-abstract class UserApi {
+abstract class UserRepository {
   Future<UserListReponseModel> fetchUsers({required FetchUsersParams params});
-  Future<UserModel> fetchUserDetail({required String userID});
 }

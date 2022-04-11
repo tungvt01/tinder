@@ -1,7 +1,7 @@
 import 'package:tinder/domain/provider/environment_provider.dart';
 
 class EnvironmentProviderImpl implements EnviromentProvider {
-  late EnviromentFlavor _flavor;
+  EnviromentFlavor _flavor = EnviromentFlavor.dev;
 
   @override
   setFlavor({required EnviromentFlavor flavor}) {

@@ -41,10 +41,6 @@ const int MAX_LENGTH_SALON_NAME = 256;
 const int MAX_LENGTH_ID_CARD = 12;
 
 class Validators {
-  static String validationImageUrl(String url) {
-    return (url.startsWith('https')) ? url : '$IMAGE_BASE_URL$url';
-  }
-
   final validatePasswordTransformer =
       StreamTransformer<String, bool>.fromHandlers(
           handleData: (password, sink) {

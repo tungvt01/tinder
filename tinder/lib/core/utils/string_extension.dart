@@ -2,21 +2,21 @@ import 'package:intl/intl.dart';
 
 extension StringToBool on String {
   bool toBoolValue() {
-    if (this.isNotEmpty) {
-      return this.toLowerCase() == 'true' || this.toLowerCase() == '1';
+    if (isNotEmpty) {
+      return toLowerCase() == 'true' || toLowerCase() == '1';
     }
     return false;
   }
 
   double? toDoubleValue() {
-    if (this.isNotEmpty) {
+    if (isNotEmpty) {
       return double.tryParse(this);
     }
     return null;
   }
 
   int? toIntValue() {
-    if (this.isNotEmpty) {
+    if (isNotEmpty) {
       return int.tryParse(this);
     }
     return null;
@@ -66,21 +66,6 @@ extension StringToDateTime on String {
   }
 }
 
-extension StringLikeCardNumber on String {
-  String formatNumberCard() {
-    final String? number = this.replaceAll(RegExp(r'(?<=.{4})\d(?=.{4})'), '*');
-    var buffer = new StringBuffer();
-    for (int i = 0; i < number!.length; i++) {
-      buffer.write(number[i]);
-      var nonZeroIndex = i + 1;
-      if (nonZeroIndex % 4 == 0 && nonZeroIndex != number.length) {
-        buffer.write('  '); // Add double spaces.
-      }
-    }
-    return buffer.toString();
-  }
-}
-
 extension LongToDateString on int {
   String formatLongToDateTimeString() {
     var dt = DateTime.fromMillisecondsSinceEpoch(this * 1000);
@@ -90,7 +75,7 @@ extension LongToDateString on int {
 
 extension FormartMoney on int {
   String formatMoney() {
-    final formatCurrency = new NumberFormat.currency(locale: 'VI');
+    final formatCurrency = NumberFormat.currency(locale: 'VI');
     return formatCurrency.format(this).toString();
   }
 }

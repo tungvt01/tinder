@@ -1,11 +1,9 @@
-import 'package:tinder/domain/usecase/index.dart';
 import 'package:tinder/presentation/resources/index.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import '../data/net/index.dart';
 import '../domain/provider/index.dart';
-import '../domain/repository/index.dart';
 import '../presentation/app/index.dart';
 import '../presentation/base/index.dart';
 import '../presentation/page/login/index.dart';
@@ -24,7 +22,7 @@ class MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    appBloc.dispatchEvent(AppLaunched());
+    // appBloc.dispatchEvent(AppLaunched());
   }
 
   @override
@@ -81,9 +79,7 @@ class AppEntry {
       injector.get<EndPointProvider>().load(),
     ]);
 
-    appBloc = ApplicationBloc(
-        repository: injector<AuthenticationRepository>(),
-        logoutUseCase: injector<LogoutUseCase>());
+    appBloc = ApplicationBloc();
 
     runApp(
       MultiProvider(

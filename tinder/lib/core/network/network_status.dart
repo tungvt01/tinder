@@ -14,9 +14,9 @@ class NetworkStatusImpl implements NetworkStatus {
     connectionChecker.onStatusChange.listen((event) {
       _isConnectToNetwork = (event == InternetConnectionStatus.connected);
     });
-    connectivity.onConnectivityChanged.listen((event) {
-      _isConnectToNetwork = (event != ConnectivityResult.none);
-    });
+    // connectivity.onConnectivityChanged.listen((event) {
+    //   _isConnectToNetwork = (event != ConnectivityResult.none);
+    // });
   }
 
   @override

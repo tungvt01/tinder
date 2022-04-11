@@ -66,7 +66,7 @@ class EndPoint {
     );
   }
   EndPoint appendPath(String subPath) {
-    String newPath = (this.path) + subPath;
-    return EndPoint(path: newPath, method: this.method);
+    String newPath = path + subPath;
+    return EndPoint(path: newPath, method: method);
   }
 }

@@ -1,18 +1,11 @@
-import 'package:tinder/core/error/failures.dart';
+import 'package:tinder/data/remote/base/index.dart';
 import 'package:tinder/domain/model/index.dart';
-import 'package:tinder/domain/usecase/index.dart';
+import 'package:tinder/domain/repository/user/user_repository.dart';
 import 'package:tinder/presentation/base/index.dart';
 import 'package:tinder/presentation/page/login/index.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 
 class LoginBloc extends BaseBloc<BaseEvent, LoginState> {
-  AuthenticationUseCases _authenticationUseCases;
-  LogoutUseCase logoutUseCase;
-
-  LoginBloc(
-    this._authenticationUseCases,
-    this.logoutUseCase,
-  ) : super(initState: LoginState()) {
+  LoginBloc() : super(initState: LoginState()) {
     on<TapBtnLoginEvent>((e, m) => _loginClickHandler(e.phone!, e.pass!, m));
     on<SignUpSuccessEvent>((e, m) => _loginClickHandler(e.phone!, e.pass!, m));
     on<NotMeButtonCLickEvent>(_onNotMeButtonClickHandler);
@@ -25,7 +18,6 @@ class LoginBloc extends BaseBloc<BaseEvent, LoginState> {
 
   _onNotMeButtonClickHandler(
       BaseEvent event, Emitter<LoginState> emitter) async {
-    final result = await logoutUseCase.logout(isRemoteLogout: false);
     emitter(NotCurrentUserState(user: state.user));
   }
 
@@ -33,8 +25,10 @@ class LoginBloc extends BaseBloc<BaseEvent, LoginState> {
   dispose() {}
 
   @override
-  void onPageInitStateEvent(PageInitStateEvent event) {
+  void onPageInitStateEvent(PageInitStateEvent event) async {
     super.onPageInitStateEvent(event);
-    //PushNotificationHandler.shared.setupPushNotification();
+    final users = await injector
+        .get<UserRepository>()
+        .fetchUsers(params: FetchUsersParams(limit: 10, page: 0));
   }
 }
