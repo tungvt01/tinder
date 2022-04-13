@@ -1,4 +1,5 @@
 import 'package:flutter_svg/svg.dart';
+import 'package:rxdart/subjects.dart';
 import 'package:tinder/presentation/base/index.dart';
 import 'package:tinder/presentation/resources/index.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +24,10 @@ class MatchingPageState
 
   @override
   bool get willListenApplicationEvent => true;
-  SwipeCardController _topCardController = SwipeCardController();
+  final SwipeCardController _topCardController = SwipeCardController();
+  PublishSubject<double> _likeButtonScaleRatio = PublishSubject<double>();
+  PublishSubject<double> _passButtonScaleRatio = PublishSubject<double>();
+  final _defaultScaleRatio = 1.0;
 
   @override
   void initState() {
@@ -64,6 +68,30 @@ class MatchingPageState
                                             _onPassedUserHandler(state);
                                           }
                                         },
+                                        onDragEnd: () {
+                                          _likeButtonScaleRatio
+                                              .add(_defaultScaleRatio);
+                                          _passButtonScaleRatio
+                                              .add(_defaultScaleRatio);
+                                        },
+                                        onDragUpdate: (direction, fraction) {
+                                          _likeButtonScaleRatio.add(
+                                              (direction ==
+                                                      SwipCardTriggerDirecton
+                                                          .left)
+                                                  ? (_defaultScaleRatio +
+                                                      fraction)
+                                                  : (_defaultScaleRatio -
+                                                      fraction));
+                                          _passButtonScaleRatio.add(
+                                              (direction ==
+                                                      SwipCardTriggerDirecton
+                                                          .right)
+                                                  ? (_defaultScaleRatio +
+                                                      fraction)
+                                                  : (_defaultScaleRatio -
+                                                      fraction));
+                                        },
                                         child: UserProfileCard(
                                           userModel: entity.value,
                                         ),
@@ -77,24 +105,42 @@ class MatchingPageState
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceEvenly,
                                 children: [
-                                  _LikeButton(
-                                    state: state,
-                                    onPressed: () {
-                                      //_onLikedUserHandler(state);
-                                      _topCardController.executeSwipe(
-                                          directon:
-                                              SwipCardTriggerDirecton.left);
-                                    },
-                                  ),
-                                  _PassButton(
-                                    state: state,
-                                    onPressed: () {
-                                      _topCardController.executeSwipe(
-                                          directon:
-                                              SwipCardTriggerDirecton.right);
-                                      //_onPassedUserHandler(state);
-                                    },
-                                  )
+                                  StreamBuilder<double>(
+                                      stream: _likeButtonScaleRatio.stream,
+                                      initialData: _defaultScaleRatio,
+                                      builder: ((context, snapshot) {
+                                        return Transform.scale(
+                                          scale: snapshot.data,
+                                          child: _LikeButton(
+                                            state: state,
+                                            onPressed: () {
+                                              //_onLikedUserHandler(state);
+                                              _topCardController.executeSwipe(
+                                                  directon:
+                                                      SwipCardTriggerDirecton
+                                                          .left);
+                                            },
+                                          ),
+                                        );
+                                      })),
+                                  StreamBuilder<double>(
+                                      stream: _passButtonScaleRatio.stream,
+                                      initialData: _defaultScaleRatio,
+                                      builder: ((context, snapshot) {
+                                        return Transform.scale(
+                                          scale: snapshot.data,
+                                          child: _PassButton(
+                                            state: state,
+                                            onPressed: () {
+                                              _topCardController.executeSwipe(
+                                                  directon:
+                                                      SwipCardTriggerDirecton
+                                                          .right);
+                                              //_onPassedUserHandler(state);
+                                            },
+                                          ),
+                                        );
+                                      }))
                                 ],
                               ),
                               bottom: 20,

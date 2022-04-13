@@ -23,12 +23,16 @@ class SwipeCardWidget extends StatefulWidget {
   final Widget child;
   final Function(bool)? onCardRemove;
   final SwipeCardController? controller;
+  final Function(SwipCardTriggerDirecton, double)? onDragUpdate;
+  final Function()? onDragEnd;
 
   const SwipeCardWidget({
     Key? key,
     required this.child,
     this.onCardRemove,
     this.controller,
+    this.onDragUpdate,
+    this.onDragEnd,
   }) : super(key: key);
 
   @override
@@ -44,6 +48,9 @@ class _SwipeCardWidgetState extends State<SwipeCardWidget>
 
   late Animation<double> _rotateAnimation;
   StreamSubscription<SwipCardTriggerDirecton>? _subscription;
+  Color _coverLayerColor = Colors.transparent;
+
+  final maxRotationAngle = 45;
 
   @override
   void initState() {
@@ -76,8 +83,12 @@ class _SwipeCardWidgetState extends State<SwipeCardWidget>
       },
       onHorizontalDragEnd: (_) async {
         _startDragOffset = null;
-        if (_rotateDegree.abs() < 45 / 2) {
-          _animateRotation(beginRadian: _rotateRadian, endRadian: 0.0);
+        if (_rotateDegree.abs() < maxRotationAngle / 2) {
+          _animateRotation(
+            beginRadian: _rotateRadian,
+            endRadian: 0.0,
+          );
+          _updateCoverLayerColerWhenSwiping(0);
         } else {
           final endRotateRadian = _rotateDegree < 0 ? -pi : pi;
           await _animateRotation(
@@ -86,21 +97,40 @@ class _SwipeCardWidgetState extends State<SwipeCardWidget>
               isSwipeLeft: _rotateDegree < 0,
               actionWhenCompleted: widget.onCardRemove);
         }
-        setState(() {});
+        if (widget.onDragEnd != null) {
+          widget.onDragEnd!();
+        }
       },
       onHorizontalDragUpdate: (details) {
         final maxDistance = MediaQuery.of(context).size.width / 2;
-        const maxRotationAngle = 45; // degree
         final diffMove = details.globalPosition.dx - _startDragOffset!.dx;
         _rotateDegree = diffMove / maxDistance * maxRotationAngle;
         setState(() {
           _rotateRadian = _rotateDegree * pi / 180;
         });
+        _updateCoverLayerColerWhenSwiping(_rotateDegree);
+        if (widget.onDragUpdate != null) {
+          final fraction = _rotateDegree / maxRotationAngle;
+          widget.onDragUpdate!(
+              _rotateDegree <= 0
+                  ? SwipCardTriggerDirecton.left
+                  : SwipCardTriggerDirecton.right,
+              fraction.abs());
+        }
       },
       child: Transform(
         transform: Matrix4.rotationZ(_rotateRadian),
-        alignment: FractionalOffset.bottomCenter,
-        child: widget.child,
+        alignment:
+            FractionalOffset.bottomCenter.add(const FractionalOffset(0, 0.3)),
+        child: Stack(
+          children: [
+            Positioned.fill(child: widget.child),
+            Positioned.fill(
+                child: Container(
+              color: _coverLayerColor,
+            )),
+          ],
+        ),
       ),
     );
   }
@@ -128,6 +158,16 @@ class _SwipeCardWidgetState extends State<SwipeCardWidget>
   _updateRotationDegree() {
     setState(() {
       _rotateRadian = _rotateAnimation.value;
+    });
+  }
+
+  _updateCoverLayerColerWhenSwiping(double rotateDegree) {
+    bool isSwipeLeft = rotateDegree <= 0;
+    const maxAlpha = 255;
+    int alpha = (rotateDegree.abs() / maxRotationAngle * maxAlpha).toInt();
+    setState(() {
+      _coverLayerColor = (isSwipeLeft ? AppColors.primaryColor : Colors.white)
+          .withAlpha(alpha);
     });
   }
 

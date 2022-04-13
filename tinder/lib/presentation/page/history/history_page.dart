@@ -48,8 +48,11 @@ class HistoryPageState
           bloc.dispatchEvent(FetchPassedUsersEvent());
         }
         await Future.delayed(const Duration(milliseconds: 500));
-        _controller.animateTo(_controller.position.maxScrollExtent,
-            duration: const Duration(milliseconds: 100), curve: Curves.linear);
+        if (_controller.hasClients) {
+          _controller.animateTo(_controller.position.maxScrollExtent,
+              duration: const Duration(milliseconds: 100),
+              curve: Curves.linear);
+        }
       },
       child: BlocBuilder<HistoryBloc, HistoryState>(builder: (context, state) {
         return (state.loadingStatus == ExecuteStatus.loading)
