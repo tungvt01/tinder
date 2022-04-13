@@ -67,7 +67,8 @@ class _SwipeCardWidgetState extends State<SwipeCardWidget>
   Widget build(BuildContext context) {
     _subscription?.cancel();
     _subscription = widget.controller?.swipeEventStream.listen((event) {
-      final endRadian = event == SwipCardTriggerDirecton.left ? -pi : pi;
+      final endRadian =
+          event == SwipCardTriggerDirecton.left ? -pi / 2 : pi / 2;
       _animateRotation(
           beginRadian: 0.0,
           endRadian: endRadian,
@@ -88,9 +89,9 @@ class _SwipeCardWidgetState extends State<SwipeCardWidget>
             beginRadian: _rotateRadian,
             endRadian: 0.0,
           );
-          _updateCoverLayerColerWhenSwiping(0);
+          _updateCoverLayerColorWhenSwiping(0.0);
         } else {
-          final endRotateRadian = _rotateDegree < 0 ? -pi : pi;
+          final endRotateRadian = _rotateDegree < 0 ? -pi / 2 : pi / 2;
           await _animateRotation(
               beginRadian: _rotateRadian,
               endRadian: endRotateRadian,
@@ -108,7 +109,7 @@ class _SwipeCardWidgetState extends State<SwipeCardWidget>
         setState(() {
           _rotateRadian = _rotateDegree * pi / 180;
         });
-        _updateCoverLayerColerWhenSwiping(_rotateDegree);
+        _updateCoverLayerColorWhenSwiping(_rotateDegree);
         if (widget.onDragUpdate != null) {
           final fraction = _rotateDegree / maxRotationAngle;
           widget.onDragUpdate!(
@@ -140,6 +141,8 @@ class _SwipeCardWidgetState extends State<SwipeCardWidget>
       required double endRadian,
       bool isSwipeLeft = true,
       Function(bool)? actionWhenCompleted}) async {
+    // _animationController = AnimationController(
+    //     vsync: this, duration: const Duration(milliseconds: 500));
     _rotateAnimation.removeListener(_updateRotationDegree);
 
     _rotateAnimation = Tween<double>(
@@ -161,7 +164,7 @@ class _SwipeCardWidgetState extends State<SwipeCardWidget>
     });
   }
 
-  _updateCoverLayerColerWhenSwiping(double rotateDegree) {
+  _updateCoverLayerColorWhenSwiping(double rotateDegree) {
     bool isSwipeLeft = rotateDegree <= 0;
     const maxAlpha = 255;
     int alpha = (rotateDegree.abs() / maxRotationAngle * maxAlpha).toInt();
