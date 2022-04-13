@@ -4,17 +4,17 @@ import 'package:tinder/domain/model/index.dart';
 import 'package:tinder/domain/repository/index.dart';
 import '../base_usecase.dart';
 
-abstract class FetchUsersUsecase {
+abstract class FetchMatchedUsersUsecase {
   Future<Either<Failure, UserListReponseModel>> fetchUsers(
       {required FetchUsersParams params});
 }
 
-class FetchUsersUsecaseImpl extends BaseUseCase<UserListReponseModel>
-    implements FetchUsersUsecase {
+class FetchMatchedUsersUsecaseImpl extends BaseUseCase<UserListReponseModel>
+    implements FetchMatchedUsersUsecase {
   UserRepository userRepository;
   late FetchUsersParams _params;
 
-  FetchUsersUsecaseImpl(
+  FetchMatchedUsersUsecaseImpl(
     this.userRepository,
   );
 
@@ -27,6 +27,6 @@ class FetchUsersUsecaseImpl extends BaseUseCase<UserListReponseModel>
 
   @override
   Future<UserListReponseModel> main() {
-    return userRepository.fetchUsers(params: _params);
+    return userRepository.fetchMatchedUsers(params: _params);
   }
 }

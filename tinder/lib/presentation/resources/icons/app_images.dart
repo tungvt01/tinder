@@ -5,18 +5,14 @@ class AppImages {
   static const icBack = 'assets/images/ic_back.svg';
   static const icSuccess = 'assets/images/ic_success.svg';
   static const icUserAvatar = 'assets/images/ic_user_avatar.svg';
-
-  static const icHistoryTabOff = 'assets/images/home/ic_history_tab_off.svg';
-  static const icHistoryTabOn = 'assets/images/home/ic_history_tab_on.svg';
-  static const icListTaskTabOff = 'assets/images/home/ic_list_task_tab_off.svg';
-  static const icListTaskTabOn = 'assets/images/home/ic_list_task_tab_on.svg';
-  static const icProfileTabOn = 'assets/images/home/ic_profile_tab_on.svg';
-  static const icProfileTabOff = 'assets/images/home/ic_profile_tab_off.svg';
-  static const icNotificiaton = 'assets/images/home/ic_notification.svg';
-
-  static const icEndLocation = 'assets/images/task/ic_end_location.svg';
-  static const icStartLocation = 'assets/images/task/ic_start_location.svg';
-  static const icReady = 'assets/images/task/ic_ready.svg';
-  static const icTime = 'assets/images/task/ic_time.svg';
-  static const icWaiting = 'assets/images/task/ic_waiting.svg';
+  static const icClose = 'assets/images/ic_close.svg';
+  static const icWhiteHeart = 'assets/images/ic_white_heart.svg';
+  static const icLocation = 'assets/images/ic_location.svg';
+  static const icMatching = 'assets/images/ic_matching.svg';
+  static const icMatchingTab = 'assets/images/ic_matching_tab.svg';
+  static const icLikedTab = 'assets/images/ic_liked_tab.svg';
+  static const icDislikeTab = 'assets/images/ic_dislike_tab.svg';
+  static const icMatchingTabSelected =
+      'assets/images/ic_matching_tab_selected.svg';
+  static const icLikeTabSelected = 'assets/images/ic_liked_tab_selected.svg';
 }

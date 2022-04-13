@@ -1,23 +1,11 @@
-import 'dart:async';
-
 import 'package:tinder/core/error/exceptions.dart';
-import 'package:tinder/domain/model/index.dart';
 import 'package:tinder/presentation/app/index.dart';
 import 'package:tinder/presentation/navigator/page_navigator.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:focus_detector/focus_detector.dart';
-import 'package:tinder/main/app_injector.dart';
 import 'package:tinder/core/error/failures.dart';
 import 'package:tinder/presentation/base/index.dart';
-import 'package:tinder/presentation/utils/page_tag.dart';
 import 'package:provider/provider.dart';
-import '../app/application_bloc.dart';
-import 'base_bloc.dart';
-import 'base_event.dart';
 import 'base_page_mixin.dart';
-import 'base_router.dart';
-import 'base_state.dart';
 
 export 'package:logger/logger.dart';
 export 'package:tinder/presentation/styles/index.dart';

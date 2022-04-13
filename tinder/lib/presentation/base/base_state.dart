@@ -4,6 +4,7 @@ enum ExecuteStatus {
   none,
   loading,
   success,
+  failure,
 }
 
 abstract class BaseState {

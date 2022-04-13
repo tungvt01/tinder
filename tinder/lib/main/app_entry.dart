@@ -1,3 +1,4 @@
+import 'package:tinder/presentation/page/home/index.dart';
 import 'package:tinder/presentation/resources/index.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -6,7 +7,6 @@ import '../data/net/index.dart';
 import '../domain/provider/index.dart';
 import '../presentation/app/index.dart';
 import '../presentation/base/index.dart';
-import '../presentation/page/login/index.dart';
 import '../presentation/widgets/index.dart';
 
 late ApplicationBloc appBloc;
@@ -30,6 +30,7 @@ class MyAppState extends State<MyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        primaryColor: AppColors.primaryColor,
         textSelectionTheme: const TextSelectionThemeData(
             selectionHandleColor: Colors.transparent),
       ),
@@ -37,17 +38,17 @@ class MyAppState extends State<MyApp> {
         return BlocBuilder<ApplicationBloc, BaseState>(
             bloc: appBloc,
             builder: (context, state) {
-              final loadingView = ProgressHud(
-                child: LoginPage(
-                  pageTag: PageTag.login,
+              const loadingView = ProgressHud(
+                child: HomePage(
+                  pageTag: PageTag.home,
                 ),
-                inAsyncCall: true,
+                inAsyncCall: false,
               );
 
               if (state is ApplicationState) {
                 switch (state.tag) {
-                  case AppLaunchTag.login:
-                    return LoginPage(pageTag: PageTag.login);
+                  case AppLaunchTag.home:
+                    return const HomePage(pageTag: PageTag.home);
                   default:
                     return loadingView;
                 }

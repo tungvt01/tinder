@@ -14,6 +14,8 @@ class UserModel {
   String? phone;
   String? picture;
   LocationModel? location;
+  int get age => (DateTime.now().year - dateOfBirth.year);
+
   UserModel(
       {required this.id,
       required this.title,

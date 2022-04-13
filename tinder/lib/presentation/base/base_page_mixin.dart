@@ -194,7 +194,9 @@ mixin BasePageMixin {
           child: Text(
             AppLocalizations.shared.commonMessageNoData,
             style: bodyMedium.copyWith(
-                color: Colors.white, fontSize: 17, fontWeight: FontWeight.w400),
+              color: AppColors.primaryColor,
+              fontSize: 17,
+            ),
           ),
         ),
       );

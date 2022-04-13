@@ -4,6 +4,7 @@ class LocationModel {
   String state;
   String country;
   String? timezone;
+  String get fullAddress => "$country, $state, $city, $street";
   LocationModel(
       {required this.street,
       required this.city,

@@ -10,19 +10,7 @@ class ApplicationBloc extends BaseBloc<ApplicationEvent, ApplicationState> {
   ApplicationBloc()
       : super(initState: ApplicationState(tag: AppLaunchTag.splash)) {
     on<AppLaunched>(
-        (_, emitter) => emitter(ApplicationState(tag: AppLaunchTag.login)));
-    on<LoginSuccessEvent>(_onLoginSuccessHandler);
-    on<LogoutSuccessEvent>(
-        (_, emitter) => emitter(ApplicationState(tag: AppLaunchTag.login)));
-  }
-
-  _onLoginSuccessHandler(
-      LoginSuccessEvent event, Emitter<ApplicationState> emitter) async {
-    if (event.hasUserData) {
-      emitter(ApplicationState(tag: AppLaunchTag.home));
-    } else {
-      emitter(ApplicationState(tag: AppLaunchTag.updateUser));
-    }
+        (_, emitter) => emitter(ApplicationState(tag: AppLaunchTag.home)));
   }
 
   @override
