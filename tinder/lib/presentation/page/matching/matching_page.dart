@@ -46,111 +46,94 @@ class MatchingPageState
       return ((state.listUsers?.length ?? 0) == 0 &&
               state.loadingStatus == ExecuteStatus.loading)
           ? buildShimmer(count: 20)
-          : SafeArea(
-              child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 0),
-                  child: state.listUsers != null
-                      ? Stack(
-                          children: [
-                            ...state.listUsers!.asMap().entries.map<Widget>(
-                                  (entity) => Positioned.fill(
-                                    child: Container(
-                                      color: Colors.transparent,
-                                      child: SwipeCardWidget(
-                                        controller: (entity.key ==
-                                                (state.listUsers!.length - 1))
-                                            ? _topCardController
-                                            : null,
-                                        onCardRemove: (isSwipeLeft) {
-                                          if (isSwipeLeft) {
-                                            _onLikedUserHandler(state);
-                                          } else {
-                                            _onPassedUserHandler(state);
-                                          }
-                                        },
-                                        onDragEnd: () {
-                                          _likeButtonScaleRatio
-                                              .add(_defaultScaleRatio);
-                                          _passButtonScaleRatio
-                                              .add(_defaultScaleRatio);
-                                        },
-                                        onDragUpdate: (direction, fraction) {
-                                          _likeButtonScaleRatio.add(
-                                              (direction ==
-                                                      SwipCardTriggerDirecton
-                                                          .left)
-                                                  ? (_defaultScaleRatio +
-                                                      fraction)
-                                                  : (_defaultScaleRatio -
-                                                      fraction));
-                                          _passButtonScaleRatio.add(
-                                              (direction ==
-                                                      SwipCardTriggerDirecton
-                                                          .right)
-                                                  ? (_defaultScaleRatio +
-                                                      fraction)
-                                                  : (_defaultScaleRatio -
-                                                      fraction));
-                                        },
-                                        child: UserProfileCard(
-                                          userModel: entity.value,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
+          : state.listUsers != null
+              ? Stack(
+                  children: [
+                    ...state.listUsers!.asMap().entries.map<Widget>(
+                          (entity) => Positioned.fill(
+                            child: Container(
+                              color: Colors.transparent,
+                              child: SwipeCardWidget(
+                                controller: (entity.key ==
+                                        (state.listUsers!.length - 1))
+                                    ? _topCardController
+                                    : null,
+                                onCardRemove: (isSwipeLeft) {
+                                  if (isSwipeLeft) {
+                                    _onLikedUserHandler(state);
+                                  } else {
+                                    _onPassedUserHandler(state);
+                                  }
+                                },
+                                onDragEnd: () {
+                                  _likeButtonScaleRatio.add(_defaultScaleRatio);
+                                  _passButtonScaleRatio.add(_defaultScaleRatio);
+                                },
+                                onDragUpdate: (direction, fraction) {
+                                  _likeButtonScaleRatio.add((direction ==
+                                          SwipCardTriggerDirecton.left)
+                                      ? (_defaultScaleRatio + fraction)
+                                      : (_defaultScaleRatio - fraction));
+                                  _passButtonScaleRatio.add((direction ==
+                                          SwipCardTriggerDirecton.right)
+                                      ? (_defaultScaleRatio + fraction)
+                                      : (_defaultScaleRatio - fraction));
+                                },
+                                child: UserProfileCard(
+                                  userModel: entity.value,
                                 ),
-                            Positioned(
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  StreamBuilder<double>(
-                                      stream: _likeButtonScaleRatio.stream,
-                                      initialData: _defaultScaleRatio,
-                                      builder: ((context, snapshot) {
-                                        return Transform.scale(
-                                          scale: snapshot.data,
-                                          child: _LikeButton(
-                                            state: state,
-                                            onPressed: () {
-                                              //_onLikedUserHandler(state);
-                                              _topCardController.executeSwipe(
-                                                  directon:
-                                                      SwipCardTriggerDirecton
-                                                          .left);
-                                            },
-                                          ),
-                                        );
-                                      })),
-                                  StreamBuilder<double>(
-                                      stream: _passButtonScaleRatio.stream,
-                                      initialData: _defaultScaleRatio,
-                                      builder: ((context, snapshot) {
-                                        return Transform.scale(
-                                          scale: snapshot.data,
-                                          child: _PassButton(
-                                            state: state,
-                                            onPressed: () {
-                                              _topCardController.executeSwipe(
-                                                  directon:
-                                                      SwipCardTriggerDirecton
-                                                          .right);
-                                              //_onPassedUserHandler(state);
-                                            },
-                                          ),
-                                        );
-                                      }))
-                                ],
                               ),
-                              bottom: 20,
-                              left: 0,
-                              right: 0,
-                            )
-                          ],
-                        )
-                      : Container()),
-            );
+                            ),
+                          ),
+                        ),
+                    Positioned(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          StreamBuilder<double>(
+                              stream: _likeButtonScaleRatio.stream,
+                              initialData: _defaultScaleRatio,
+                              builder: ((context, snapshot) {
+                                return Transform.scale(
+                                  scale: snapshot.data,
+                                  child: _LikeButton(
+                                    state: state,
+                                    onPressed: () {
+                                      //_onLikedUserHandler(state);
+                                      _topCardController.executeSwipe(
+                                          directon:
+                                              SwipCardTriggerDirecton.left);
+                                    },
+                                  ),
+                                );
+                              })),
+                          StreamBuilder<double>(
+                              stream: _passButtonScaleRatio.stream,
+                              initialData: _defaultScaleRatio,
+                              builder: ((context, snapshot) {
+                                return Transform.scale(
+                                  scale: snapshot.data,
+                                  child: _PassButton(
+                                    state: state,
+                                    onPressed: () {
+                                      _topCardController.executeSwipe(
+                                          directon:
+                                              SwipCardTriggerDirecton.right);
+                                      //_onPassedUserHandler(state);
+                                    },
+                                  ),
+                                );
+                              }))
+                        ],
+                      ),
+                      bottom: 20,
+                      left: 0,
+                      right: 0,
+                    )
+                  ],
+                )
+              : Container();
     });
   }
 
