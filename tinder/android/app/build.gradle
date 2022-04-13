@@ -63,13 +63,13 @@ android {
         dev {
             dimension "app"
             resValue "string", "app_name", "[DEV]Tinder"
-            applicationId "com.sonic.rental.car.dev"
+            applicationId "com.tungvu.tinder.dev"
         }
 
         prod {
             dimension "app"
             resValue "string", "app_name", "Tinder"
-            applicationId "com.sonic.rental.car"
+            applicationId "com.tungvu.tinder"
         }
     }
 }
