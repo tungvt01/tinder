@@ -26,7 +26,7 @@ class HistoryPageState
 
   @override
   bool get willListenApplicationEvent => true;
-
+  final ScrollController _controller = ScrollController();
   @override
   void initState() {
     super.initState();
@@ -40,13 +40,16 @@ class HistoryPageState
   @override
   Widget buildLayout(BuildContext context, BaseBloc bloc) {
     return FocusDetector(
-      onVisibilityGained: () {
+      onVisibilityGained: () async {
         if (widget.tag == PageTag.likedUser) {
           bloc.dispatchEvent(FetchLikedUsersEvent());
         }
         if (widget.tag == PageTag.passedUser) {
           bloc.dispatchEvent(FetchPassedUsersEvent());
         }
+        await Future.delayed(const Duration(milliseconds: 500));
+        _controller.animateTo(_controller.position.maxScrollExtent,
+            duration: const Duration(milliseconds: 100), curve: Curves.linear);
       },
       child: BlocBuilder<HistoryBloc, HistoryState>(builder: (context, state) {
         return (state.loadingStatus == ExecuteStatus.loading)
@@ -54,6 +57,8 @@ class HistoryPageState
             : state.users.isEmpty
                 ? buildNoDataMessage()
                 : GridView.count(
+                    controller: _controller,
+                    shrinkWrap: true,
                     childAspectRatio: 1 / 1.3,
                     crossAxisCount: 2,
                     children: [

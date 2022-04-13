@@ -1,12 +1,35 @@
+import 'dart:async';
 import 'dart:math';
 
+import 'package:rxdart/subjects.dart';
 import 'package:tinder/presentation/base/base_page_mixin.dart';
+
+enum SwipCardTriggerDirecton {
+  left,
+  right,
+}
+
+class SwipeCardController {
+  final PublishSubject<SwipCardTriggerDirecton> _trigger =
+      PublishSubject<SwipCardTriggerDirecton>();
+  executeSwipe({required SwipCardTriggerDirecton directon}) {
+    _trigger.add(directon);
+  }
+
+  Stream<SwipCardTriggerDirecton> get swipeEventStream => _trigger.stream;
+}
 
 class SwipeCardWidget extends StatefulWidget {
   final Widget child;
   final Function(bool)? onCardRemove;
+  final SwipeCardController? controller;
 
-  const SwipeCardWidget({required this.child, this.onCardRemove});
+  const SwipeCardWidget({
+    Key? key,
+    required this.child,
+    this.onCardRemove,
+    this.controller,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _SwipeCardWidgetState();
@@ -20,12 +43,13 @@ class _SwipeCardWidgetState extends State<SwipeCardWidget>
   late final AnimationController _animationController;
 
   late Animation<double> _rotateAnimation;
+  StreamSubscription<SwipCardTriggerDirecton>? _subscription;
 
   @override
   void initState() {
     super.initState();
     _animationController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 200));
+        vsync: this, duration: const Duration(milliseconds: 400));
     _rotateAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
@@ -34,6 +58,16 @@ class _SwipeCardWidgetState extends State<SwipeCardWidget>
 
   @override
   Widget build(BuildContext context) {
+    _subscription?.cancel();
+    _subscription = widget.controller?.swipeEventStream.listen((event) {
+      final endRadian = event == SwipCardTriggerDirecton.left ? -pi : pi;
+      _animateRotation(
+          beginRadian: 0.0,
+          endRadian: endRadian,
+          isSwipeLeft: event == SwipCardTriggerDirecton.left,
+          actionWhenCompleted: widget.onCardRemove);
+    });
+
     return GestureDetector(
       onHorizontalDragStart: (details) {
         _startDragOffset = details.globalPosition;
@@ -100,6 +134,7 @@ class _SwipeCardWidgetState extends State<SwipeCardWidget>
   @override
   dispose() {
     _animationController.dispose();
+    _subscription?.cancel();
     super.dispose();
   }
 }

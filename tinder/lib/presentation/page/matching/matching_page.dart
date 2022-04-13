@@ -1,7 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:matrix4_transform/matrix4_transform.dart';
-import 'package:tinder/domain/model/index.dart';
 import 'package:tinder/presentation/base/index.dart';
 import 'package:tinder/presentation/resources/index.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +23,7 @@ class MatchingPageState
 
   @override
   bool get willListenApplicationEvent => true;
+  SwipeCardController _topCardController = SwipeCardController();
 
   @override
   void initState() {
@@ -50,25 +48,29 @@ class MatchingPageState
                   child: state.listUsers != null
                       ? Stack(
                           children: [
-                            ...state.listUsers!.map<Widget>(
-                              (entity) => Positioned.fill(
-                                child: Container(
-                                  color: Colors.transparent,
-                                  child: SwipeCardWidget(
-                                    onCardRemove: (isSwipeLeft) {
-                                      if (isSwipeLeft) {
-                                        _onLikedUserHandler(state);
-                                      } else {
-                                        _onPassedUserHandler(state);
-                                      }
-                                    },
-                                    child: UserProfileCard(
-                                      userModel: entity,
+                            ...state.listUsers!.asMap().entries.map<Widget>(
+                                  (entity) => Positioned.fill(
+                                    child: Container(
+                                      color: Colors.transparent,
+                                      child: SwipeCardWidget(
+                                        controller: (entity.key ==
+                                                (state.listUsers!.length - 1))
+                                            ? _topCardController
+                                            : null,
+                                        onCardRemove: (isSwipeLeft) {
+                                          if (isSwipeLeft) {
+                                            _onLikedUserHandler(state);
+                                          } else {
+                                            _onPassedUserHandler(state);
+                                          }
+                                        },
+                                        child: UserProfileCard(
+                                          userModel: entity.value,
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ),
                             Positioned(
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -78,13 +80,19 @@ class MatchingPageState
                                   _LikeButton(
                                     state: state,
                                     onPressed: () {
-                                      _onLikedUserHandler(state);
+                                      //_onLikedUserHandler(state);
+                                      _topCardController.executeSwipe(
+                                          directon:
+                                              SwipCardTriggerDirecton.left);
                                     },
                                   ),
                                   _PassButton(
                                     state: state,
                                     onPressed: () {
-                                      _onPassedUserHandler(state);
+                                      _topCardController.executeSwipe(
+                                          directon:
+                                              SwipCardTriggerDirecton.right);
+                                      //_onPassedUserHandler(state);
                                     },
                                   )
                                 ],
