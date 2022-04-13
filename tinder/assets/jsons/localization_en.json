@@ -1,0 +1,6 @@
+{
+    "common_message_connection_error":"Cannot connect to server. Please check your internet connection",
+    "common_message_server_maintenance":"Server is under maintenance. Please comeback later",
+    "common_message_session_expired":"Session is expired. Please login again",
+    "common_message_no_data":"There is no data"
+}
