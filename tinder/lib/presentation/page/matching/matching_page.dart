@@ -1,10 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:matrix4_transform/matrix4_transform.dart';
 import 'package:tinder/domain/model/index.dart';
 import 'package:tinder/presentation/base/index.dart';
 import 'package:tinder/presentation/resources/index.dart';
 import 'package:flutter/material.dart';
 import 'package:tinder/presentation/widgets/index.dart';
+import 'package:tinder/presentation/widgets/swipe_card_widget.dart';
 import 'index.dart';
 
 class MatchingPage extends BasePage {
@@ -50,8 +52,20 @@ class MatchingPageState
                           children: [
                             ...state.listUsers!.map<Widget>(
                               (entity) => Positioned.fill(
-                                child: UserProfileCard(
-                                  userModel: entity,
+                                child: Container(
+                                  color: Colors.transparent,
+                                  child: SwipeCardWidget(
+                                    onCardRemove: (isSwipeLeft) {
+                                      if (isSwipeLeft) {
+                                        _onLikedUserHandler(state);
+                                      } else {
+                                        _onPassedUserHandler(state);
+                                      }
+                                    },
+                                    child: UserProfileCard(
+                                      userModel: entity,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
@@ -63,9 +77,15 @@ class MatchingPageState
                                 children: [
                                   _LikeButton(
                                     state: state,
+                                    onPressed: () {
+                                      _onLikedUserHandler(state);
+                                    },
                                   ),
                                   _PassButton(
                                     state: state,
+                                    onPressed: () {
+                                      _onPassedUserHandler(state);
+                                    },
                                   )
                                 ],
                               ),
@@ -79,27 +99,35 @@ class MatchingPageState
             );
     });
   }
+
+  _onLikedUserHandler(MatchingState state) {
+    final user =
+        (state.listUsers?.isNotEmpty ?? false) ? state.listUsers?.last : null;
+    if (user != null) {
+      bloc.dispatchEvent(LikedEvent(user: user));
+    }
+  }
+
+  _onPassedUserHandler(MatchingState state) {
+    final user =
+        (state.listUsers?.isNotEmpty ?? false) ? state.listUsers?.last : null;
+    if (user != null) {
+      bloc.dispatchEvent(DislikedEvent(user: user));
+    }
+  }
 }
 
 class _PassButton extends StatelessWidget {
   final MatchingState state;
-  const _PassButton({required this.state});
+  final Function() onPressed;
+  const _PassButton({required this.state, required this.onPressed});
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: 60,
       width: 60,
       child: ElevatedButton(
-          onPressed: () {
-            final user = (state.listUsers?.isNotEmpty ?? false)
-                ? state.listUsers?.last
-                : null;
-            if (user != null) {
-              context
-                  .read<MatchingBloc>()
-                  .dispatchEvent(DislikedEvent(user: user));
-            }
-          },
+          onPressed: onPressed,
           style: ButtonStyle(
             overlayColor: MaterialStateProperty.resolveWith(
               (states) {
@@ -130,23 +158,15 @@ class _PassButton extends StatelessWidget {
 
 class _LikeButton extends StatelessWidget {
   final MatchingState state;
-  const _LikeButton({required this.state});
+  final Function() onPressed;
+  const _LikeButton({required this.state, required this.onPressed});
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: 60,
       width: 60,
       child: ElevatedButton(
-          onPressed: () {
-            final user = (state.listUsers?.isNotEmpty ?? false)
-                ? state.listUsers?.last
-                : null;
-            if (user != null) {
-              context
-                  .read<MatchingBloc>()
-                  .dispatchEvent(LikedEvent(user: user));
-            }
-          },
+          onPressed: onPressed,
           style: ButtonStyle(
             elevation: MaterialStateProperty.all<double>(10),
             shadowColor:
